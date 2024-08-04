@@ -31,7 +31,6 @@ export default function StarRating({
   className = "",
   onSetRating,
   defaultRating = 0,
-  test
 }) {
   const defaultRatingState = defaultRating <= maxRating ? defaultRating : 0;
 
