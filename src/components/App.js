@@ -67,7 +67,7 @@ export default function App() {
         <SearchBar />
         <NumResult movies={movies} /> {/* avoid prop drilling*/}
       </NavBar>
-
+      {/* testing */}
       <PageContent>
         <Box>
           <MoviesList movies={movies} /> {/* avoid prop drilling*/}
