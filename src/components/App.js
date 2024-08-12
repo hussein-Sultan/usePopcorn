@@ -8,6 +8,8 @@ import MoviesList from "./PageContent/MoviesList";
 import Box from "./PageContent/Box";
 import WatchedSummary from "./PageContent/WatchedSummary";
 import WatchedMoviesList from "./PageContent/WatchedMoviesList";
+import Loader from "./PageContent/Loader";
+import ErrorMsg from "./PageContent/ErrorMsg";
 
 const tempMovieData = [
   {
@@ -56,17 +58,42 @@ const tempWatchedData = [
   },
 ];
 
-const KEY = "aaab5db3"; //! i declared this variable outside of the component, to prevent multiple creatation
+const KEY = "aaab5db3"; //? i declared this variable outside of the component, to prevent multiple creatation
 
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const query = "interstellar";
 
-  useEffect(() => {
-    fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=one piece`)
-      .then((res) => res.json())
-      .then((data) => setMovies(data.Search));
-  }, []); // [] dependency array
+  //! useEffect callbacks are synchronous, we can't use it as async function
+  useEffect(function () {
+    async function fetchMovies() {
+      try {
+        setIsLoading(true);
+
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
+        );
+
+        if (!res.ok)
+          throw new Error("Something Went Wrong With Fetching Movies");
+
+        const data = await res.json();
+
+        if (data.Response === "False") throw new Error("Movie Not Found");
+
+        setMovies(data.Search);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchMovies();
+  }, []); //? [] dependency array, in this situation dependency array called mounting
 
   return (
     <>
@@ -78,7 +105,10 @@ export default function App() {
       {/* testing */}
       <PageContent>
         <Box>
-          <MoviesList movies={movies} /> {/* avoid prop drilling*/}
+          {/* one of these is rendered */}
+          {isLoading && <Loader />}
+          {!isLoading && !error && <MoviesList movies={movies} />}
+          {error && <ErrorMsg message={error} />}
         </Box>
         <Box>
           <WatchedSummary watched={watched} />
