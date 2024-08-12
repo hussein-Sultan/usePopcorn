@@ -1,8 +1,6 @@
 import { useState } from "react";
 
-export default function SearchBar() {
-  const [query, setQuery] = useState("");
-
+export default function SearchBar({ query, setQuery }) {
   return (
     <input
       type="text"
