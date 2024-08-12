@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NavBar from "./NavBar";
 import Logo from "./NavBar/Logo";
 import SearchBar from "./NavBar/SearchBar";
@@ -56,9 +56,17 @@ const tempWatchedData = [
   },
 ];
 
+const KEY = "aaab5db3"; //! i declared this variable outside of the component, to prevent multiple creatation
+
 export default function App() {
-  const [movies, setMovies] = useState(tempMovieData);
-  const [watched, setWatched] = useState(tempWatchedData);
+  const [movies, setMovies] = useState([]);
+  const [watched, setWatched] = useState([]);
+
+  useEffect(() => {
+    fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=one piece`)
+      .then((res) => res.json())
+      .then((data) => setMovies(data.Search));
+  }, []); // [] dependency array
 
   return (
     <>
