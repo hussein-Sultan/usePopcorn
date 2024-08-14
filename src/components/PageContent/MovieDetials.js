@@ -3,9 +3,21 @@ import StarRating from "./StarRating";
 import Button from "./Button";
 import Loader from "./Loader";
 
-export default function MovieDetials({ KEY, selectedId, onCloseMovie }) {
+export default function MovieDetials({
+  KEY,
+  watched,
+  selectedId,
+  onCloseMovie,
+  onAddWatched,
+}) {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [userRating, setUserRating] = useState(0);
+
+  const isWatched = watched.map((movie) => movie.imdbID).includes(selectedId);
+  const watchUserRating = watched.find(
+    (movie) => movie.imdbID === selectedId
+  )?.userRating;
 
   const {
     Title: title,
@@ -24,19 +36,67 @@ export default function MovieDetials({ KEY, selectedId, onCloseMovie }) {
     function () {
       async function fetchMovieDetials() {
         setIsLoading(true);
-        const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
-        );
+        try {
+          const res = await fetch(
+            `http://www.omdbapi.com/?apikey=${KEY}&i=${selectedId}`
+          );
 
-        const data = await res.json();
-        setMovie(data);
-        setIsLoading(false);
+          if (!res.ok) throw new Error("Movie Not Found");
+
+          const data = await res.json();
+          setMovie(data);
+          setIsLoading(false);
+        } catch (err) {
+          console.log(err.message);
+        }
       }
 
       fetchMovieDetials();
     },
     [selectedId, KEY]
   );
+
+  useEffect(() => {
+    if (!title) return;
+
+    document.title = `Movie | ${title}`;
+
+    return function () {
+      document.title = "usePopcorn";
+    };
+  }, [title]);
+
+  useEffect(
+    function () {
+      function callback(e) {
+        if (e.code === "Escape") {
+          onCloseMovie();
+        }
+      }
+
+      document.addEventListener("keydown", callback);
+
+      return function () {
+        document.removeEventListener("keydown", callback);
+      };
+    },
+    [onCloseMovie]
+  );
+
+  const handleAdd = () => {
+    const newWatchedMovie = {
+      year,
+      title,
+      poster,
+      userRating,
+      imdbID: selectedId,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(" ").at(0)),
+    };
+
+    onAddWatched(newWatchedMovie);
+    onCloseMovie();
+  };
 
   return (
     <div className="details">
@@ -52,20 +112,37 @@ export default function MovieDetials({ KEY, selectedId, onCloseMovie }) {
             <div className="details-overview">
               <h2>{title}</h2>
               <p>
-                {released} &bull; {runtime}
+                {released}. {runtime}
               </p>
               <p>{genre}</p>
               <p>
                 <span>⭐</span>
-                {imdbRating}
-                IMDB rating
+                <span>{imdbRating} IMDB rating</span>
               </p>
             </div>
           </header>
 
           <section>
             <div className="rating">
-              <StarRating maxRating={10} size={24} />
+              {!isWatched ? (
+                <>
+                  <StarRating
+                    maxRating={10}
+                    size={23}
+                    onSetRating={setUserRating}
+                  />
+                  {userRating > 0 && (
+                    <Button Style={"btn-add"} onAction={handleAdd}>
+                      + Add To List
+                    </Button>
+                  )}
+                </>
+              ) : (
+                <p className="text-3xl">
+                  You Rated With Movie{" "}
+                  <span className="text-2xl"> ⭐{watchUserRating}</span>
+                </p>
+              )}
             </div>
             <p>
               <em>{plot}</em>

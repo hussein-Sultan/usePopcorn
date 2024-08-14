@@ -184,6 +184,7 @@ body {
 
 .list h3 {
   font-size: 1.8rem;
+  margin-bottom: 2px;
 }
 
 .list div {
@@ -192,6 +193,9 @@ body {
   gap: 2.4rem;
 }
 
+.list div:last-child {
+  justify-self: end;
+}
 .list p {
   display: flex;
   align-items: center;
@@ -335,8 +339,8 @@ body {
   aspect-ratio: 1;
   border-radius: 50%;
   border: none;
-  /* background-color: var(--color-text); */
-  background-color: #fff;
+  background-color: var(--color-text);
+  /* background-color: #fff; */
   color: var(--color-background-500);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
   font-family: sans-serif;
