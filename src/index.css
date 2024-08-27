@@ -34,6 +34,25 @@ body {
   padding: 2.4rem;
 }
 
+/** scrollbar */
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background-color: #555;
+  border-radius: 0.9rem;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #f1f9f9;
+  border-radius: 0.9rem;
+
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #888;
+}
+
 /* ******* */
 
 .nav-bar {
@@ -82,7 +101,6 @@ body {
 .logo {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
 }
 
 .logo span {
@@ -146,7 +164,7 @@ body {
 
 .list {
   list-style: none;
-  padding: 0.8rem 0;
+  /* padding: 0.8rem 0; */
   overflow: auto;
 }
 
@@ -154,6 +172,9 @@ body {
   height: calc(100% - 9rem);
 }
 
+.list-watched li div:last-child {
+  justify-self: end;
+}
 .list li {
   position: relative;
   display: grid;
@@ -162,10 +183,18 @@ body {
   column-gap: 2.4rem;
   font-size: 1.6rem;
   align-items: center;
-
   padding: 1.6rem 3.2rem;
+}
+.list li:not(:last-child) {
   border-bottom: 1px solid var(--color-background-100);
 }
+.list li:first-child {
+  padding-top: 25px;
+}
+.list li:last-child {
+  padding-bottom: 25px;
+}
+
 
 .list.list-movies li {
   cursor: pointer;
@@ -180,6 +209,11 @@ body {
 .list img {
   width: 100%;
   grid-row: 1 / -1;
+  border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -o-border-radius: 3px;
 }
 
 .list h3 {
@@ -193,9 +227,6 @@ body {
   gap: 2.4rem;
 }
 
-.list div:last-child {
-  justify-self: end;
-}
 .list p {
   display: flex;
   align-items: center;

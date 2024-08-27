@@ -128,7 +128,7 @@ export default function MovieDetials({
                 <>
                   <StarRating
                     maxRating={10}
-                    size={23}
+                    size={24}
                     onSetRating={setUserRating}
                   />
                   {userRating > 0 && (
