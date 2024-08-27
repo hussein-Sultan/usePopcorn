@@ -12,6 +12,7 @@ import Loader from "./PageContent/Loader";
 import ErrorMsg from "./PageContent/ErrorMsg";
 import MovieDetials from "./PageContent/MovieDetials";
 import { useMovies } from "./CustomHooks/useMovies";
+import { useLocalStorageState } from "./CustomHooks/useLocalStorageState";
 
 const KEY = "aaab5db3"; //? i declared this variable outside of the component, to prevent multiple creatation
 
@@ -19,18 +20,7 @@ export default function App() {
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
   const { movies, isLoading, error } = useMovies(query, handleColseMovie); //? custom hook
-  const [watched, setWatched] = useState(function () {
-    const storedValue = localStorage.getItem("watched");
-    return JSON.parse(storedValue);
-  });
-
-
-  useEffect(
-    function () {
-      localStorage.setItem("watched", JSON.stringify(watched));
-    },
-    [watched]
-  );
+  const [watched, setWatched] = useLocalStorageState([], "watched");
 
   const handleSelectMovie = (id) => {
     setSelectedId((selected) => (selected === id ? null : id));
