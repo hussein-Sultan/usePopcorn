@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import StarRating from "./StarRating";
 import Button from "./Button";
 import Loader from "./Loader";
+import { useKey } from "../CustomHooks/useKey";
 
 export default function MovieDetials({
   KEY,
@@ -31,6 +32,8 @@ export default function MovieDetials({
     Director: director,
     Genre: genre,
   } = movie;
+
+  useKey("Escape", onCloseMovie);
 
   useEffect(
     function () {
@@ -65,23 +68,6 @@ export default function MovieDetials({
       document.title = "usePopcorn";
     };
   }, [title]);
-
-  useEffect(
-    function () {
-      function callback(e) {
-        if (e.code === "Escape") {
-          onCloseMovie();
-        }
-      }
-
-      document.addEventListener("keydown", callback);
-
-      return function () {
-        document.removeEventListener("keydown", callback);
-      };
-    },
-    [onCloseMovie]
-  );
 
   const handleAdd = () => {
     const newWatchedMovie = {
