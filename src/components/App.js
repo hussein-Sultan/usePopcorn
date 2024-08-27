@@ -17,10 +17,13 @@ const KEY = "aaab5db3"; //? i declared this variable outside of the component, t
 export default function App() {
   const [query, setQuery] = useState("");
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
+  const [watched, setWatched] = useState(function () {
+    const storedValue = localStorage.getItem("watched");
+    return JSON.parse(storedValue);
+  });
 
   //! useEffect callbacks are synchronous, we can't use it as async function
   useEffect(
@@ -66,6 +69,13 @@ export default function App() {
     },
     [query]
   ); //? [] dependency array
+
+  useEffect(
+    function () {
+      localStorage.setItem("watched", JSON.stringify(watched));
+    },
+    [watched]
+  );
 
   const handleSelectMovie = (id) => {
     setSelectedId((selected) => (selected === id ? null : id));
