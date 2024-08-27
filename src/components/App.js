@@ -11,64 +11,19 @@ import WatchedMoviesList from "./PageContent/WatchedMoviesList";
 import Loader from "./PageContent/Loader";
 import ErrorMsg from "./PageContent/ErrorMsg";
 import MovieDetials from "./PageContent/MovieDetials";
+import { useMovies } from "./CustomHooks/useMovies";
 
 const KEY = "aaab5db3"; //? i declared this variable outside of the component, to prevent multiple creatation
 
 export default function App() {
   const [query, setQuery] = useState("");
-  const [movies, setMovies] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
   const [selectedId, setSelectedId] = useState(null);
   const [watched, setWatched] = useState(function () {
     const storedValue = localStorage.getItem("watched");
     return JSON.parse(storedValue);
   });
 
-  //! useEffect callbacks are synchronous, we can't use it as async function
-  useEffect(
-    function () {
-      const controller = new AbortController();
-
-      async function fetchMovies() {
-        try {
-          setIsLoading(true);
-          setError(""); //? to reset error state
-          const res = await fetch(
-            `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`,
-            { signal: controller.signal }
-          );
-
-          if (!res.ok)
-            throw new Error("Something Went Wrong With Fetching Movies");
-
-          const data = await res.json();
-
-          if (data.Response === "False") throw new Error("Movie Not Found");
-
-          setMovies(data.Search);
-        } catch (err) {
-          if (err.name !== "AbortError") setError(err.message);
-        } finally {
-          setIsLoading(false);
-        }
-      }
-
-      if (query.length < 3) {
-        setMovies([]);
-        setError("");
-        return;
-      }
-
-      handleColseMovie();
-      fetchMovies();
-
-      return function () {
-        controller.abort();
-      };
-    },
-    [query]
-  ); //? [] dependency array
+  const { movies, isLoading, error } = useMovies(query, handleColseMovie);
 
   useEffect(
     function () {
@@ -81,9 +36,9 @@ export default function App() {
     setSelectedId((selected) => (selected === id ? null : id));
   };
 
-  const handleColseMovie = () => {
+  function handleColseMovie() {
     setSelectedId(null);
-  };
+  }
 
   const handleAddWatched = (movie) => {
     setWatched((watched) => [...watched, movie]);
