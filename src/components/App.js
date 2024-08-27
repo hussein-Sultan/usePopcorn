@@ -18,12 +18,12 @@ const KEY = "aaab5db3"; //? i declared this variable outside of the component, t
 export default function App() {
   const [query, setQuery] = useState("");
   const [selectedId, setSelectedId] = useState(null);
+  const { movies, isLoading, error } = useMovies(query, handleColseMovie); //? custom hook
   const [watched, setWatched] = useState(function () {
     const storedValue = localStorage.getItem("watched");
     return JSON.parse(storedValue);
   });
 
-  const { movies, isLoading, error } = useMovies(query, handleColseMovie);
 
   useEffect(
     function () {

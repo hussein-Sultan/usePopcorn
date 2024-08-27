@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 const KEY = "aaab5db3"; //? i declared this variable outside of the component, to prevent multiple creatation
 
-export function useMovies(query, callback) {
+export function useMovies(query) {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -9,8 +9,6 @@ export function useMovies(query, callback) {
   //! useEffect callbacks are synchronous, we can't use it as async function
   useEffect(
     function () {
-      callback?.();
-
       const controller = new AbortController();
 
       async function fetchMovies() {
@@ -49,7 +47,7 @@ export function useMovies(query, callback) {
         controller.abort();
       };
     },
-    [query, callback]
+    [query]
   ); //? [] dependency array
 
   return { movies, isLoading, error };
