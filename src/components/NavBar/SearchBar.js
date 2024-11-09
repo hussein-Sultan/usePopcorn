@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useKey } from "../CustomHooks/useKey";
 
 export default function SearchBar({ query, setQuery }) {
@@ -11,6 +11,10 @@ export default function SearchBar({ query, setQuery }) {
     inputEl.current.focus();
     setQuery("");
   });
+
+  useEffect(function () {
+    inputEl.current.focus();
+  }, []);
 
   return (
     <input

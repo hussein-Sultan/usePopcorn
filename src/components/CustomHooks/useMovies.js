@@ -21,7 +21,7 @@ export function useMovies(query) {
           );
 
           if (!res.ok)
-            throw new Error("Something Went Wrong With Fetching Movies");
+            throw new Error("Something Went  Wrong With Fetching Movies");
 
           const data = await res.json();
 
